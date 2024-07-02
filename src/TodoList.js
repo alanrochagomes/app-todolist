@@ -79,20 +79,18 @@ const TodoList = () => {
     }
   };
 
-  const cancelRemove = () => {
-    setIndexToRemove(null);
-    setShowModal(false);
+  const cancelRemove = (event) => {
+    if (event.target.className === "modal-overlay") {
+      setIndexToRemove(null);
+      setShowModal(false);
+    }
   };
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="todo-container">
         <header className="todo-header">
-          {isEditing && (
-            <div className="editing-indicator">
-              Editing...
-            </div>
-          )}
+          {isEditing && <div className="editing-indicator">Editing...</div>}
           {isEditingTitle ? (
             <input
               type="text"
@@ -155,17 +153,23 @@ const TodoList = () => {
         </ul>
         <TaskForm onAdd={addTodo} />
         {isEditing && (
-          <button className="save-button" onClick={() => saveEdit(editingIndex, todos[editingIndex].text)}>
+          <button
+            className="save-button"
+            onClick={() => saveEdit(editingIndex, todos[editingIndex].text)}
+          >
             Save
           </button>
         )}
         {showModal && (
-          <div className="modal-overlay">
+          <div className="modal-overlay" onClick={cancelRemove}>
             <div className="modal-content">
-              <div className="modal-title">Are you sure you want to remove this?</div>
+              <div className="modal-title">
+                Are you sure you want to remove this?
+              </div>
               <div className="modal-actions">
-                <button className="cancel-button" onClick={cancelRemove}>Cancel</button>
-                <button className="close-button" onClick={confirmRemove}>Remove</button>
+                <button className="close-button" onClick={confirmRemove}>
+                  Remove
+                </button>
               </div>
             </div>
           </div>

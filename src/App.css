@@ -349,9 +349,10 @@
   border-radius: 100px;
   width: 100px;
   height: 100px;
-  transform: translateX(-150%);
+  transform: translateX(150%);
 }
 
+/*
 .cancel-button {
   border: none;
   color: #fff;
@@ -363,3 +364,4 @@
   transform: translateX(500%);
   padding-left: 10px;
 }
+*/
