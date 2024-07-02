@@ -86,6 +86,9 @@ const TodoList = () => {
           <div className="controls-edit">
             <p className="tasks-title">Edit</p>
           </div>
+          <div className="controls-remove">
+            <p className="remove">Remove</p>
+          </div>
         </header>
         <ul className="todo-list">
           {todos.map((todo, index) => (

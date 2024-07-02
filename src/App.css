@@ -21,7 +21,17 @@
   font-size: 14px;
   cursor: pointer;
   position: absolute;
-  left: 500px;
+  left: 470px;
+  top: 80%;
+  transform: translateY(-50%);
+}
+
+.controls-remove {
+  display: flex;
+  font-size: 14px;
+  cursor: pointer;
+  position: absolute;
+  left: 520px;
   top: 80%;
   transform: translateY(-50%);
 }
@@ -47,6 +57,16 @@
 }
 
 .edit-title {
+  background: none;
+  border: none;
+  color: #98a2b3;
+  cursor: pointer;
+  margin-right: 5px;
+  font-size: 14px;
+  padding: 10px;
+}
+
+.remove {
   background: none;
   border: none;
   color: #98a2b3;
