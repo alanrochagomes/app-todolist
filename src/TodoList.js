@@ -45,8 +45,21 @@ const TodoList = () => {
   };
 
   const saveEdit = () => {
-    setEditingIndex(null);
-    setIsEditing(false);
+    if (editingIndex !== null) {
+      const updatedText = todos[editingIndex].text;
+      const updatedTodos = [...todos];
+      updatedTodos[editingIndex].text = updatedText;
+      setTodos(updatedTodos);
+      setEditingIndex(null);
+      setIsEditing(false);
+    }
+  };
+
+  const toggleTodoCompletion = (index) => {
+    const updatedTodos = todos.map((todo, i) =>
+      i === index ? { ...todo, completed: !todo.completed } : todo
+    );
+    setTodos(updatedTodos);
   };
 
   return (
@@ -99,10 +112,9 @@ const TodoList = () => {
               editingIndex={editingIndex}
               setEditingIndex={setEditingIndex}
               setIsEditing={setIsEditing}
-              todos={todos}
-              setTodos={setTodos}
-              moveTodo={moveTodo}
               removeTodo={removeTodo}
+              moveTodo={moveTodo}
+              toggleTodoCompletion={toggleTodoCompletion}
             />
           ))}
         </ul>

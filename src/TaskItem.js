@@ -10,10 +10,9 @@ const TaskItem = ({
   editingIndex,
   setEditingIndex,
   setIsEditing,
-  todos,
-  setTodos,
-  moveTodo,
   removeTodo,
+  moveTodo,
+  toggleTodoCompletion,
 }) => {
   const [editingText, setEditingText] = useState(todo.text);
   const isCurrentEditing = editingIndex === index;
@@ -44,24 +43,9 @@ const TaskItem = ({
     }
   }, [isCurrentEditing]);
 
-  const saveEdit = (index) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index].text = editingText;
-    setTodos(updatedTodos);
-    setEditingIndex(null);
-    setEditingText("");
-    setIsEditing(false);
-  };
-
-  const toggleTodoCompletion = (index) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index].completed = !updatedTodos[index].completed;
-    setTodos(updatedTodos);
-  };
-
-  const startEditing = (index) => {
+  const startEditing = () => {
     setEditingIndex(index);
-    setEditingText(todos[index].text);
+    setEditingText(todo.text);
     setIsEditing(true);
   };
 
@@ -85,14 +69,17 @@ const TaskItem = ({
           <input
             type="text"
             value={editingText}
-            onChange={(e) => setEditingText(e.target.value)}
+            onChange={(e) => {
+              setEditingText(e.target.value);
+              todo.text = e.target.value;
+            }}
             className="edit-input"
             ref={inputRef}
           />
         ) : (
           <div
             className={`todo-text ${todo.completed ? "completed" : ""}`}
-            onClick={() => startEditing(index)}
+            onClick={startEditing}
           >
             {todo.text}
           </div>
@@ -100,22 +87,7 @@ const TaskItem = ({
       </div>
       {isCurrentEditing && (
         <div className="todo-actions">
-          <button
-            className="edit-title"
-            onClick={(e) => {
-              e.stopPropagation();
-              saveEdit(index);
-            }}
-          >
-            Save
-          </button>
-          <button
-            className="remove-title"
-            onClick={(e) => {
-              e.stopPropagation();
-              removeTodo(index);
-            }}
-          >
+          <button className="remove-title" onClick={() => removeTodo(index)}>
             Remove
           </button>
         </div>
