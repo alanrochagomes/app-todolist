@@ -270,8 +270,10 @@
 
 .save-button {
   display: block;
-  margin: 50px auto;
+  margin: 20px auto;
   padding: 10px 20px;
+  width: 100px;
+  height: 100px;
   font-size: 16px;
   background-color: #1d2939;
   color: #fff;
