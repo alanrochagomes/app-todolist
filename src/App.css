@@ -282,9 +282,9 @@
   color: #fff;
   padding: 5px 10px;
   border: 1px solid #344054;
-  border-radius: 5px;
+  border-radius: 15px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 24px;
   margin-bottom: 10px; /* Ajuste conforme necessário */
 }
 
