@@ -62,11 +62,7 @@ const TodoList = () => {
     <DndProvider backend={HTML5Backend}>
       <div className="todo-container">
         <header className="todo-header">
-          {isEditing && (
-            <div className="editing-indicator">
-              Editing...
-            </div>
-          )}
+          {isEditing && <div className="editing-indicator">Editing...</div>}
           {isEditingTitle ? (
             <input
               type="text"
@@ -92,18 +88,20 @@ const TodoList = () => {
           <div className="controls-edit">
             <p className="tasks-title">Edit</p>
           </div>
-          <div className="controls-remove">
-            <p
-              className="remove"
-              onClick={() => {
-                if (editingIndex !== null) {
-                  removeTodo(editingIndex);
-                }
-              }}
-            >
-              Remove
-            </p>
-          </div>
+          {editingIndex !== null && (
+            <div className="controls-remove">
+              <p
+                className="remove"
+                onClick={() => {
+                  if (editingIndex !== null) {
+                    removeTodo(editingIndex);
+                  }
+                }}
+              >
+                Remove
+              </p>
+            </div>
+          )}
         </header>
         <ul className="todo-list">
           {todos.map((todo, index) => (
@@ -122,7 +120,10 @@ const TodoList = () => {
         </ul>
         <TaskForm onAdd={addTodo} />
         {isEditing && (
-          <button className="save-button" onClick={() => saveEdit(editingIndex, todos[editingIndex].text)}>
+          <button
+            className="save-button"
+            onClick={() => saveEdit(editingIndex, todos[editingIndex].text)}
+          >
             Save
           </button>
         )}
