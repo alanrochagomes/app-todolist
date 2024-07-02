@@ -88,7 +88,7 @@ const TaskItem = ({
       {isCurrentEditing && (
         <div className="todo-actions">
           <button className="remove-title" onClick={() => removeTodo(index)}>
-            Remove
+            
           </button>
         </div>
       )}

@@ -44,21 +44,17 @@ const TodoList = () => {
     setTodos(updatedTodos);
   };
 
-  const saveEdit = () => {
-    if (editingIndex !== null) {
-      const updatedText = todos[editingIndex].text;
-      const updatedTodos = [...todos];
-      updatedTodos[editingIndex].text = updatedText;
-      setTodos(updatedTodos);
-      setEditingIndex(null);
-      setIsEditing(false);
-    }
+  const saveEdit = (index, newText) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index].text = newText;
+    setTodos(updatedTodos);
+    setEditingIndex(null);
+    setIsEditing(false);
   };
 
   const toggleTodoCompletion = (index) => {
-    const updatedTodos = todos.map((todo, i) =>
-      i === index ? { ...todo, completed: !todo.completed } : todo
-    );
+    const updatedTodos = [...todos];
+    updatedTodos[index].completed = !updatedTodos[index].completed;
     setTodos(updatedTodos);
   };
 
@@ -67,10 +63,7 @@ const TodoList = () => {
       <div className="todo-container">
         <header className="todo-header">
           {isEditing && (
-            <div
-              className="editing-indicator"
-              onClick={() => console.log("Clicked!")}
-            >
+            <div className="editing-indicator">
               Editing...
             </div>
           )}
@@ -100,7 +93,16 @@ const TodoList = () => {
             <p className="tasks-title">Edit</p>
           </div>
           <div className="controls-remove">
-            <p className="remove">Remove</p>
+            <p
+              className="remove"
+              onClick={() => {
+                if (editingIndex !== null) {
+                  removeTodo(editingIndex);
+                }
+              }}
+            >
+              Remove
+            </p>
           </div>
         </header>
         <ul className="todo-list">
@@ -112,15 +114,15 @@ const TodoList = () => {
               editingIndex={editingIndex}
               setEditingIndex={setEditingIndex}
               setIsEditing={setIsEditing}
-              removeTodo={removeTodo}
               moveTodo={moveTodo}
               toggleTodoCompletion={toggleTodoCompletion}
+              saveEdit={saveEdit}
             />
           ))}
         </ul>
         <TaskForm onAdd={addTodo} />
         {isEditing && (
-          <button className="save-button" onClick={saveEdit}>
+          <button className="save-button" onClick={() => saveEdit(editingIndex, todos[editingIndex].text)}>
             Save
           </button>
         )}
