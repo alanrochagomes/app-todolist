@@ -58,11 +58,22 @@ const TodoList = () => {
     setTodos(updatedTodos);
   };
 
+  const startEditingFirstTask = () => {
+    if (todos.length > 0) {
+      setEditingIndex(0);
+      setIsEditing(true);
+    }
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="todo-container">
         <header className="todo-header">
-          {isEditing && <div className="editing-indicator">Editing...</div>}
+          {isEditing && (
+            <div className="editing-indicator">
+              Editing...
+            </div>
+          )}
           {isEditingTitle ? (
             <input
               type="text"
@@ -83,10 +94,14 @@ const TodoList = () => {
             </h1>
           )}
           <div className="controls-tasks">
-            <p className="edit-title">Tasks</p>
+            <p className="edit-title" onClick={startEditingFirstTask}>
+              Tasks
+            </p>
           </div>
           <div className="controls-edit">
-            <p className="tasks-title">Edit</p>
+            <p className="tasks-title" onClick={startEditingFirstTask}>
+              Edit
+            </p>
           </div>
           {editingIndex !== null && (
             <div className="controls-remove">
@@ -120,10 +135,7 @@ const TodoList = () => {
         </ul>
         <TaskForm onAdd={addTodo} />
         {isEditing && (
-          <button
-            className="save-button"
-            onClick={() => saveEdit(editingIndex, todos[editingIndex].text)}
-          >
+          <button className="save-button" onClick={() => saveEdit(editingIndex, todos[editingIndex].text)}>
             Save
           </button>
         )}
