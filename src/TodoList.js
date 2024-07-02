@@ -19,6 +19,8 @@ const TodoList = () => {
   const [title, setTitle] = useState("Booking Movie Tickets");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editingTitle, setEditingTitle] = useState(title);
+  const [showModal, setShowModal] = useState(false);
+  const [indexToRemove, setIndexToRemove] = useState(null);
 
   const addTodo = (newTodo) => {
     setTodos([...todos, { text: newTodo, completed: false }]);
@@ -65,6 +67,23 @@ const TodoList = () => {
     }
   };
 
+  const openModal = (index) => {
+    setIndexToRemove(index);
+    setShowModal(true);
+  };
+
+  const confirmRemove = () => {
+    if (indexToRemove !== null) {
+      removeTodo(indexToRemove);
+      setShowModal(false);
+    }
+  };
+
+  const cancelRemove = () => {
+    setIndexToRemove(null);
+    setShowModal(false);
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="todo-container">
@@ -109,7 +128,7 @@ const TodoList = () => {
                 className="remove"
                 onClick={() => {
                   if (editingIndex !== null) {
-                    removeTodo(editingIndex);
+                    openModal(editingIndex);
                   }
                 }}
               >
@@ -130,6 +149,7 @@ const TodoList = () => {
               moveTodo={moveTodo}
               toggleTodoCompletion={toggleTodoCompletion}
               saveEdit={saveEdit}
+              removeTodo={removeTodo}
             />
           ))}
         </ul>
@@ -138,6 +158,17 @@ const TodoList = () => {
           <button className="save-button" onClick={() => saveEdit(editingIndex, todos[editingIndex].text)}>
             Save
           </button>
+        )}
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-title">Are you sure you want to remove this?</div>
+              <div className="modal-actions">
+                <button className="cancel-button" onClick={cancelRemove}>Cancel</button>
+                <button className="close-button" onClick={confirmRemove}>Remove</button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </DndProvider>
