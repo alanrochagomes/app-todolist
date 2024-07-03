@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "./todoContainer.css"; // Import the CSS file for the todo container
 import TaskForm from "./TaskForm";
 import TaskItem from "./TaskItem";
 import "./modal.css"; // Import the CSS file for the modal
+import deleteSound from "./assets/delete_sound.mp3"; // Import the delete sound
 
 const TodoList = () => {
   const [todos, setTodos] = useState([
@@ -22,6 +23,7 @@ const TodoList = () => {
   const [editingTitle, setEditingTitle] = useState(title);
   const [showModal, setShowModal] = useState(false);
   const [indexToRemove, setIndexToRemove] = useState(null);
+  const audioRef = useRef(new Audio(deleteSound)); // Create an audio reference
 
   const addTodo = (newTodo) => {
     setTodos([...todos, { text: newTodo, completed: false }]);
@@ -32,6 +34,7 @@ const TodoList = () => {
     setTodos(updatedTodos);
     setEditingIndex(null);
     setIsEditing(false);
+    audioRef.current.play(); // Play the delete sound
   };
 
   const saveTitleEdit = () => {
