@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import "./App.css";
+import "./todoContainer.css"; // Import the CSS file for the todo container
 import TaskForm from "./TaskForm";
 import TaskItem from "./TaskItem";
+import "./modal.css"; // Import the CSS file for the modal
 
 const TodoList = () => {
   const [todos, setTodos] = useState([

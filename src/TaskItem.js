@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import icon from "./assets/icon.png";
+import "./taskItem.css"; // Import the CSS file for TaskItem
 
 const ItemType = "TODO";
 
@@ -87,9 +88,10 @@ const TaskItem = ({
       </div>
       {isCurrentEditing && (
         <div className="todo-actions">
-          <button className="remove-title" onClick={() => removeTodo(index)}>
-            
-          </button>
+          <button
+            className="remove-title"
+            onClick={() => removeTodo(index)}
+          ></button>
         </div>
       )}
     </li>
