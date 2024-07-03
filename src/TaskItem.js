@@ -16,6 +16,7 @@ const TaskItem = ({
   toggleTodoCompletion,
 }) => {
   const [editingText, setEditingText] = useState(todo.text);
+  const [showCommentBox, setShowCommentBox] = useState(false);
   const isCurrentEditing = editingIndex === index;
   const [{ isDragging }, ref] = useDrag({
     type: ItemType,
@@ -50,51 +51,66 @@ const TaskItem = ({
     setIsEditing(true);
   };
 
+  const toggleCommentBox = () => {
+    setShowCommentBox(!showCommentBox);
+  };
+
   return (
-    <li
-      ref={(node) => ref(drop(node))}
-      className="todo-item"
-      style={{ opacity: isDragging ? 0.5 : 1 }}
-    >
-      <div className="todo-content">
-        <img src={icon} alt="icon" className="Move-icon" />
-        <div className="todo-checkbox">
-          <input
-            type="checkbox"
-            checked={todo.completed}
-            onChange={() => toggleTodoCompletion(index)}
-          />
-          <div className="custom-checkbox"></div>
+    <>
+      <li
+        ref={(node) => ref(drop(node))}
+        className="todo-item"
+        style={{ opacity: isDragging ? 0.5 : 1 }}
+        onClick={toggleCommentBox}
+      >
+        <div className="todo-content">
+          <img src={icon} alt="icon" className="Move-icon" />
+          <div className="todo-checkbox">
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => toggleTodoCompletion(index)}
+            />
+            <div className="custom-checkbox"></div>
+          </div>
+          {isCurrentEditing ? (
+            <input
+              type="text"
+              value={editingText}
+              onChange={(e) => {
+                setEditingText(e.target.value);
+                todo.text = e.target.value;
+              }}
+              className="edit-input"
+              ref={inputRef}
+            />
+          ) : (
+            <div
+              className={`todo-text ${todo.completed ? "completed" : ""}`}
+              onClick={startEditing}
+            >
+              {todo.text}
+            </div>
+          )}
         </div>
-        {isCurrentEditing ? (
-          <input
-            type="text"
-            value={editingText}
-            onChange={(e) => {
-              setEditingText(e.target.value);
-              todo.text = e.target.value;
-            }}
-            className="edit-input"
-            ref={inputRef}
-          />
-        ) : (
-          <div
-            className={`todo-text ${todo.completed ? "completed" : ""}`}
-            onClick={startEditing}
-          >
-            {todo.text}
+        {isCurrentEditing && (
+          <div className="todo-actions">
+            <button
+              className="remove-title"
+              onClick={() => removeTodo(index)}
+            ></button>
           </div>
         )}
-      </div>
-      {isCurrentEditing && (
-        <div className="todo-actions">
-          <button
-            className="remove-title"
-            onClick={() => removeTodo(index)}
-          ></button>
+      </li>
+      {showCommentBox && (
+        <div className="comment-box">
+          <div className="comment-content">
+            <textarea placeholder="Write a comment here..."></textarea>
+            <button onClick={toggleCommentBox}>Comment</button>
+          </div>
         </div>
       )}
-    </li>
+    </>
   );
 };
 
