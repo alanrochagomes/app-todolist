@@ -1,0 +1,36 @@
+/* Estilos para o Header */
+header {
+    background-color: #344054;
+    color: white;
+    padding: 5px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Garante que o header esteja acima de outros elementos */
+  }
+  
+  /* Estilos para a navegação */
+  nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  
+  nav ul li {
+    float: left;
+  }
+  
+  nav ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  nav ul li a:hover {
+    color: #FEC84B;
+  }
+  

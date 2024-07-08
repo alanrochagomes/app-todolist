@@ -1,12 +1,14 @@
 .todo-container {
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 100px;
 }
 
 .todo-header {
   text-align: center;
   position: relative;
+  background-color: white;
+  color: black;
 }
 
 .todo-title {
