@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import icon from "./assets/icon.png";
-import "./TaskItem.css"; // Import the CSS file for TaskItem
+import "./TaskItem.css";
+import TaskDetails from "./TaskDetails"; // Import the TaskDetails component
 
 const ItemType = "TODO";
 
@@ -16,7 +17,7 @@ const TaskItem = ({
   toggleTodoCompletion,
 }) => {
   const [editingText, setEditingText] = useState(todo.text);
-  const [showCommentBox, setShowCommentBox] = useState(false);
+  const [showDetails, setShowDetails] = useState(false); // State to show/hide TaskDetails
   const isCurrentEditing = editingIndex === index;
   const [{ isDragging }, ref] = useDrag({
     type: ItemType,
@@ -51,8 +52,8 @@ const TaskItem = ({
     setIsEditing(true);
   };
 
-  const toggleCommentBox = () => {
-    setShowCommentBox(!showCommentBox);
+  const toggleDetails = () => {
+    setShowDetails(!showDetails);
   };
 
   return (
@@ -61,9 +62,8 @@ const TaskItem = ({
         ref={(node) => ref(drop(node))}
         className="todo-item"
         style={{ opacity: isDragging ? 0.5 : 1 }}
-        onClick={toggleCommentBox}
       >
-        <div className="todo-content">
+        <div className="todo-content" onClick={toggleDetails}>
           <img src={icon} alt="icon" className="Move-icon" />
           <div className="todo-checkbox">
             <input
@@ -102,13 +102,8 @@ const TaskItem = ({
           </div>
         )}
       </li>
-      {showCommentBox && (
-        <div className="comment-box">
-          <div className="comment-content">
-            <textarea placeholder="Write a comment here..."></textarea>
-            <button onClick={toggleCommentBox}>Comment</button>
-          </div>
-        </div>
+      {showDetails && (
+        <TaskDetails task={todo} onClose={toggleDetails} />
       )}
     </>
   );

@@ -127,29 +127,46 @@
 
 .comment-content {
   background: white;
-  padding: 20px;
+  padding: 30px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   max-width: 400px;
   width: 100%;
-  transform: translateY(40%);
+  transform: translateY(30%);
 }
-
 
 .comment-content textarea {
   width: 100%;
   height: 100px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid #98A2B3;
+  border-radius: 16px;
 }
 
 .comment-content button {
-  padding: 10px 20px;
+  padding: 10px 10px;
+  transform: translateX(120%);
   border: none;
-  background-color: #007bff;
+  width: 100px;
+  height: 100px;
+  background-color: #1d2939;
   color: white;
-  border-radius: 4px;
+  border-radius: 50px;
   cursor: pointer;
+}
+
+/* Estilo para TaskItem */
+
+.task-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.task-item:hover {
+  background: #f5f5f5;
 }
