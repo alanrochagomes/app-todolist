@@ -15,7 +15,7 @@ const CommentList = ({ task, onClose }) => {
   const handleAddComment = (comment, index) => {
     const newCommentObject = {
       text: comment,
-      user: getRandomUser(), // Seleciona um usuário aleatório
+      user: comments.length === 0 ? "Jordan" : getRandomUser(), // Primeiro comentário é "Jordan", os outros são aleatórios
       replies: [],
     };
     let updatedComments;

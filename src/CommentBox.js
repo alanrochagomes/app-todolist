@@ -14,7 +14,10 @@ const CommentBox = ({ onAddComment, index, onClose }) => {
   };
 
   const handleClickOutside = (event) => {
-    if (commentBoxRef.current && !commentBoxRef.current.contains(event.target)) {
+    if (
+      commentBoxRef.current &&
+      !commentBoxRef.current.contains(event.target)
+    ) {
       onClose();
     }
   };
