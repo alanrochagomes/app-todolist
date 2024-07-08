@@ -4,21 +4,30 @@ import { faTimes, faComment } from "@fortawesome/free-solid-svg-icons";
 import "./TaskDetails.css";
 
 const TaskDetails = ({ task, onClose }) => {
+  const currentUser = "Jordan"; // O usuário atual pode ser dinâmico
   const [comments, setComments] = useState(task.comments || []);
   const [newComment, setNewComment] = useState("");
   const [isCommentBoxVisible, setIsCommentBoxVisible] = useState(false);
+  const [activeCommentIndex, setActiveCommentIndex] = useState(null);
 
   const handleAddComment = () => {
     if (newComment.trim()) {
-      const commentWithUser = {
-        user: "Jordan", // Altere para o nome do usuário correto
+      const newCommentObject = {
         text: newComment,
+        user: activeCommentIndex !== null ? currentUser : null,
       };
-      const updatedComments = [...comments, commentWithUser];
+      let updatedComments;
+      if (activeCommentIndex !== null) {
+        updatedComments = [...comments];
+        updatedComments.splice(activeCommentIndex + 1, 0, newCommentObject);
+      } else {
+        updatedComments = [newCommentObject, ...comments];
+      }
       setComments(updatedComments);
       task.comments = updatedComments; // Atualiza a task original
       setNewComment("");
-      setIsCommentBoxVisible(false); // Fecha a caixa de comentário após salvar
+      setIsCommentBoxVisible(false);
+      setActiveCommentIndex(null);
     }
   };
 
@@ -28,6 +37,12 @@ const TaskDetails = ({ task, onClose }) => {
 
   const handleToggleCommentBox = () => {
     setIsCommentBoxVisible(!isCommentBoxVisible);
+    setActiveCommentIndex(null);
+  };
+
+  const handleReply = (index) => {
+    setIsCommentBoxVisible(true);
+    setActiveCommentIndex(index);
   };
 
   return (
@@ -54,6 +69,22 @@ const TaskDetails = ({ task, onClose }) => {
         <button className="add-reminder">Add reminder</button>
       </div>
 
+      <div className="comments-list">
+        {comments.map((comment, index) => (
+          <div key={index} className="comment">
+            <div className="comment-text" onClick={() => handleReply(index)}>
+              {comment.text}
+            </div>
+            {comment.user && (
+              <div className="comment-user">
+                <span className="user-icon">J</span> {/* Ícone do usuário */}
+                <span className="user-name">{comment.user}</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
       {isCommentBoxVisible && (
         <div className="comment-box">
           <div className="comment-content">
@@ -64,20 +95,6 @@ const TaskDetails = ({ task, onClose }) => {
             />
             <button onClick={handleAddComment}>Comment</button>
           </div>
-        </div>
-      )}
-
-      {comments.length > 0 && (
-        <div className="comments-list">
-          {comments.map((comment, index) => (
-            <div key={index} className="comment">
-              <div className="comment-user">
-                <span className="user-icon">J</span> {/* Ícone do usuário */}
-                <span className="user-name">{comment.user}</span>
-              </div>
-              <div className="comment-text">{comment.text}</div>
-            </div>
-          ))}
         </div>
       )}
     </div>
