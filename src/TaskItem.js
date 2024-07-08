@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import icon from "./assets/icon.png";
 import "./TaskItem.css";
-import TaskDetails from "./TaskDetails"; // Import the TaskDetails component
+import TaskDetails from "./CommentList"; 
 
 const ItemType = "TODO";
 
