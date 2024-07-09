@@ -9,13 +9,13 @@ const CommentList = ({ task, onClose }) => {
   const [isCommentBoxVisible, setIsCommentBoxVisible] = useState(false);
   const [activeCommentIndex, setActiveCommentIndex] = useState(null);
 
-  const users = ["Alice", "Bob", "Charlie"]; // Usuários de exemplo
+  const users = ["Alice", "Bob", "Charlie"];
   const getRandomUser = () => users[Math.floor(Math.random() * users.length)];
 
   const handleAddComment = (comment, index) => {
     const newCommentObject = {
       text: comment,
-      user: comments.length === 0 ? "Jordan" : getRandomUser(), // Primeiro comentário é "Jordan", os outros são aleatórios
+      user: comments.length === 0 ? "Jordan" : getRandomUser(),
       replies: [],
     };
     let updatedComments;
@@ -26,12 +26,17 @@ const CommentList = ({ task, onClose }) => {
       updatedComments = [...comments, newCommentObject];
     }
     setComments(updatedComments);
-    task.comments = updatedComments; // Atualiza a task original
+    task.comments = updatedComments;
   };
 
   const handleReply = (index) => {
     setIsCommentBoxVisible(true);
     setActiveCommentIndex(index);
+  };
+
+  const openGoogleReminder = () => {
+    const url = "https://calendar.google.com/calendar/u/0/r";
+    window.location.href = url;
   };
 
   return (
@@ -80,7 +85,7 @@ const CommentList = ({ task, onClose }) => {
       </div>
 
       <div className="task-details-actions">
-        <button className="add-reminder">Add reminder</button>
+        <button className="add-reminder" onClick={openGoogleReminder}>Add reminder</button>
         <FontAwesomeIcon
           icon={faComment}
           className="task-details-icon"
