@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment } from "@fortawesome/free-solid-svg-icons";
+import { faComment, faTrashAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
 import "./TaskItem.css";
 import TaskDetails from "./CommentList";
-import moveIcon from "./assets/move-icon.png"; // Importe sua imagem PNG aqui
+import moveIcon from "./assets/move-icon.png";
 
 const ItemType = "TODO";
 
@@ -20,7 +20,7 @@ const TaskItem = ({
 }) => {
   const [editingText, setEditingText] = useState(todo.text);
   const [showDetails, setShowDetails] = useState(false);
-  const [showCommentIcon, setShowCommentIcon] = useState(false); // State to show/hide comment icon
+  const [showCommentIcon, setShowCommentIcon] = useState(false); // State to show/hide icons
   const isCurrentEditing = editingIndex === index;
   const [{ isDragging }, ref] = useDrag({
     type: ItemType,
@@ -98,11 +98,23 @@ const TaskItem = ({
             </div>
           )}
           {showCommentIcon && (
-            <FontAwesomeIcon
-              icon={faComment}
-              className="comment-icon"
-              onClick={toggleDetails}
-            />
+            <>
+              <FontAwesomeIcon
+                icon={faComment}
+                className="comment-icon"
+                onClick={toggleDetails}
+              />
+              <FontAwesomeIcon
+                icon={faEdit}
+                className="edit-icon"
+                onClick={startEditing}
+              />
+              <FontAwesomeIcon
+                icon={faTrashAlt}
+                className="remove-icon"
+                onClick={() => removeTodo(index)}
+              />
+            </>
           )}
         </div>
         {isCurrentEditing && <div className="todo-actions"></div>}
