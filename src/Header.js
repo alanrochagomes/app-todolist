@@ -81,6 +81,9 @@ const Header = () => {
             </ul>
           )}
         </ul>
+        <footer className="mini-footer">
+          <p>© 2024 Futuristic Todo List .</p>
+        </footer>
       </aside>
     </div>
   );
