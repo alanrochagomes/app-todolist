@@ -1,5 +1,5 @@
 .header {
-  background-color: #7F7F7F;
+  background-color: transparent;
   padding: -5px;
   position: fixed;
   top: 0;
@@ -27,7 +27,7 @@
   left: 0;
   width: 250px;
   height: 100%;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   transform: translateX(-100%);
   transition: transform 0.3s ease;
@@ -55,7 +55,8 @@
 .user-profile {
   display: flex;
   justify-content: center;
-  margin-bottom: 17px;
+  margin-bottom: 20px;
+  transform: translateY(120%);
 }
 
 .projects {

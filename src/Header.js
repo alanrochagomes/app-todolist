@@ -40,7 +40,7 @@ const Header = () => {
         <div className="user-profile">
           <FontAwesomeIcon icon={faUserCircle} size="2x" />
         </div>
-        <ul>
+      {/*  <ul> 
           <li>
             <a href="#home" className="active">
               🔺 Adicionar tarefa
@@ -80,7 +80,7 @@ const Header = () => {
               </li>
             </ul>
           )}
-        </ul>
+        </ul> */}
         <footer className="mini-footer">
           <p>© 2024 Futuristic Todo List .</p>
         </footer>
