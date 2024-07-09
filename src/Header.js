@@ -34,7 +34,7 @@ const Header = () => {
             />
           </svg>
         </button>
-        <div className="header-title">Todo List</div>
+        <div className="header-title">Todo List v07</div>
       </nav>
       <aside className={`side-menu ${isExpanded ? "expanded" : ""}`}>
         <div className="user-profile">
