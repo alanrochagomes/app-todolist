@@ -80,9 +80,6 @@ const Header = () => {
               </li>
             </ul>
           )}
-          <li className="add-team">
-            <a href="#team">Adicionar uma equipe</a>
-          </li>
         </ul>
       </aside>
     </div>

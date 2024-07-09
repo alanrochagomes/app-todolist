@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import icon from "./assets/icon.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faComment } from "@fortawesome/free-solid-svg-icons";
 import "./TaskItem.css";
-import TaskDetails from "./CommentList"; 
+import TaskDetails from "./CommentList";
 
 const ItemType = "TODO";
 
@@ -17,7 +18,8 @@ const TaskItem = ({
   toggleTodoCompletion,
 }) => {
   const [editingText, setEditingText] = useState(todo.text);
-  const [showDetails, setShowDetails] = useState(false); // State to show/hide TaskDetails
+  const [showDetails, setShowDetails] = useState(false);
+  const [showCommentIcon, setShowCommentIcon] = useState(false); // State to show/hide comment icon
   const isCurrentEditing = editingIndex === index;
   const [{ isDragging }, ref] = useDrag({
     type: ItemType,
@@ -62,9 +64,11 @@ const TaskItem = ({
         ref={(node) => ref(drop(node))}
         className="todo-item"
         style={{ opacity: isDragging ? 0.5 : 1 }}
+        onMouseEnter={() => setShowCommentIcon(true)}
+        onMouseLeave={() => setShowCommentIcon(false)}
       >
-        <div className="todo-content" onClick={toggleDetails}>
-          <img src={icon} alt="icon" className="Move-icon" />
+        <div className="todo-content">
+          <div className="move-icon">☰</div>
           <div className="todo-checkbox">
             <input
               type="checkbox"
@@ -92,13 +96,16 @@ const TaskItem = ({
               {todo.text}
             </div>
           )}
+          {showCommentIcon && (
+            <FontAwesomeIcon
+              icon={faComment}
+              className="comment-icon"
+              onClick={toggleDetails}
+            />
+          )}
         </div>
         {isCurrentEditing && (
           <div className="todo-actions">
-            <button
-              className="remove-title"
-              onClick={() => removeTodo(index)}
-            ></button>
           </div>
         )}
       </li>
