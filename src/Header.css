@@ -1,5 +1,5 @@
 .header {
-  background-color: #f8f9fa;
+  background-color: #FFFFFF;
   padding: -5px;
   position: fixed;
   top: 0;
@@ -27,7 +27,7 @@
   left: 0;
   width: 250px;
   height: 100%;
-  background-color: #fcfaf8;
+  background-color: #D0D5DD;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   transform: translateX(-100%);
   transition: transform 0.3s ease;

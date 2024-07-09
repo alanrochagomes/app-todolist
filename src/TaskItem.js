@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-solid-svg-icons";
 import "./TaskItem.css";
 import TaskDetails from "./CommentList";
+import moveIcon from "./assets/move-icon.png"; // Importe sua imagem PNG aqui
 
 const ItemType = "TODO";
 
@@ -68,7 +69,7 @@ const TaskItem = ({
         onMouseLeave={() => setShowCommentIcon(false)}
       >
         <div className="todo-content">
-          <div className="move-icon">☰</div>
+          <img src={moveIcon} alt="Move Icon" className="move-icon" />
           <div className="todo-checkbox">
             <input
               type="checkbox"
@@ -104,14 +105,9 @@ const TaskItem = ({
             />
           )}
         </div>
-        {isCurrentEditing && (
-          <div className="todo-actions">
-          </div>
-        )}
+        {isCurrentEditing && <div className="todo-actions"></div>}
       </li>
-      {showDetails && (
-        <TaskDetails task={todo} onClose={toggleDetails} />
-      )}
+      {showDetails && <TaskDetails task={todo} onClose={toggleDetails} />}
     </>
   );
 };
