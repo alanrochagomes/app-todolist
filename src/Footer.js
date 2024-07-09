@@ -29,7 +29,7 @@ const Footer = () => {
   return (
     <footer className={`footer ${isVisible ? 'show' : ''}`}>
       <div className="footer-content">
-        <p>© {new Date().getFullYear()} Seu Nome ou Empresa. Todos os direitos reservados.</p>
+        <p>© {new Date().getFullYear()} Futuristic Todo List . Todos os direitos reservados.</p>
       </div>
     </footer>
   );

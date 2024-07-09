@@ -1,36 +1,71 @@
-/* Estilos para o Header */
-header {
-    background-color: #344054;
-    color: white;
-    padding: 5px 0;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 1000; /* Garante que o header esteja acima de outros elementos */
-  }
-  
-  /* Estilos para a navegação */
-  nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-  }
-  
-  nav ul li {
-    float: left;
-  }
-  
-  nav ul li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-  }
-  
-  nav ul li a:hover {
-    color: #FEC84B;
-  }
-  
+.header {
+  background-color: #f8f9fa;
+  padding: -5px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  margin: 10px;
+}
+
+.menu-toggle {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  background-color: #fcfaf8;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.side-menu.expanded {
+  transform: translateX(0);
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 10px;
+}
+
+.side-menu li {
+  margin: 20px 0;
+}
+
+.side-menu a {
+  color: #333;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.user-profile {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 17px;
+}
+
+.projects {
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.projects ul {
+  list-style: none;
+  padding-left: 20px;
+  margin: 0;
+}
