@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faTrashAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faComment, faTrashAlt, faEdit, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import "./TaskItem.css";
 import TaskDetails from "./CommentList";
 import moveIcon from "./assets/move-icon.png";
@@ -59,6 +59,10 @@ const TaskItem = ({
     setShowDetails(!showDetails);
   };
 
+  const handleReminderClick = () => {
+    window.location.href = "https://calendar.google.com/calendar/u/0/r"; // Função para adicionar um lembrete para uma tarefa específica
+  };
+
   return (
     <>
       <li
@@ -103,6 +107,11 @@ const TaskItem = ({
                 icon={faComment}
                 className="comment-icon"
                 onClick={toggleDetails}
+              />
+              <FontAwesomeIcon
+                icon={faCalendar}
+                className="reminder-icon"
+                onClick={handleReminderClick} // Associando a função de redirecionamento ao clique no ícone
               />
               <FontAwesomeIcon
                 icon={faEdit}

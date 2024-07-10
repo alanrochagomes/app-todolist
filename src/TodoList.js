@@ -90,6 +90,11 @@ const TodoList = () => {
     }
   };
 
+  const addReminder = (index) => {
+    // Função para adicionar um lembrete para uma tarefa específica
+    alert(`Reminder added for task: ${todos[index].text}`);
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="todo-container">
@@ -152,6 +157,7 @@ const TodoList = () => {
               toggleTodoCompletion={toggleTodoCompletion}
               saveEdit={saveEdit}
               removeTodo={removeTodo}
+              addReminder={addReminder} // Passando a função para o TaskItem
             />
           ))}
         </ul>
