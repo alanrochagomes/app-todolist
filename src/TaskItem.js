@@ -1,7 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faComment, faTrashAlt, faEdit, faCalendar } from "@fortawesome/free-solid-svg-icons";
+import {
+  faComment,
+  faTrashAlt,
+  faEdit,
+  faCalendar,
+} from "@fortawesome/free-solid-svg-icons";
 import "./TaskItem.css";
 import TaskDetails from "./CommentList";
 import moveIcon from "./assets/move-icon.png";
@@ -101,13 +106,8 @@ const TaskItem = ({
               {todo.text}
             </div>
           )}
-          {showCommentIcon && (
+          {showCommentIcon && ( // FontAwesomeIcon icon={faComment} className="comment-icon" onClick={toggleDetails}
             <>
-              <FontAwesomeIcon
-                icon={faComment}
-                className="comment-icon"
-                onClick={toggleDetails}
-              />
               <FontAwesomeIcon
                 icon={faCalendar}
                 className="reminder-icon"
