@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faComment } from "@fortawesome/free-solid-svg-icons";
-import "./CommentList.css";
+import "../comment/css/CommentList.css";
 import CommentBox from "./CommentBox";
 
 const CommentList = ({ task, onClose }) => {

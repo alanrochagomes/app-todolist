@@ -1,11 +1,11 @@
 import React, { useState, useRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import "./TodoList.css"; // Import the CSS file for the todo container
+import "../css/TodoList.css"; // Import the CSS file for the todo container
 import TaskForm from "./TaskForm";
 import TaskItem from "./TaskItem";
-import "./Modal.css"; // Import the CSS file for the modal
-import deleteSound from "./assets/delete_sound.mp3"; // Import the delete sound
+import "../css/Modal.css"; // Import the CSS file for the modal
+import deleteSound from "../assets/delete_sound.mp3"; // Import the delete sound
 
 const TodoList = () => {
   const [todos, setTodos] = useState([

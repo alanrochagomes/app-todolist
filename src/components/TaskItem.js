@@ -7,9 +7,9 @@ import {
   faEdit,
   faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
-import "./TaskItem.css";
-import TaskDetails from "./CommentList";
-import moveIcon from "./assets/move-icon.png";
+import "../css/TaskItem.css";
+import TaskDetails from "../components/comment/CommentList";
+import moveIcon from "../assets/move-icon.png";
 
 const ItemType = "TODO";
 

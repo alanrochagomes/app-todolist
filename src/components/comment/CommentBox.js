@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./CommentBox.css";
+import "../comment/css/CommentBox.css";
 
 const CommentBox = ({ onAddComment, index, onClose }) => {
   const [newComment, setNewComment] = useState("");
