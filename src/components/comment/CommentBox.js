@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import "../comment/css/CommentBox.css";
 
 const CommentBox = ({ onAddComment, index, onClose }) => {
@@ -13,21 +13,21 @@ const CommentBox = ({ onAddComment, index, onClose }) => {
     }
   };
 
-  const handleClickOutside = (event) => {
+  const handleClickOutside = useCallback((event) => {
     if (
       commentBoxRef.current &&
       !commentBoxRef.current.contains(event.target)
     ) {
       onClose();
     }
-  };
+  }, [onClose]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
 
   return (
     <div className="comment-box-overlay">

@@ -2,14 +2,14 @@ import React, { useRef, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faComment,
   faTrashAlt,
   faEdit,
   faCalendar,
+  faComment,
 } from "@fortawesome/free-solid-svg-icons";
 import "../css/TaskItem.css";
 import TaskDetails from "../components/comment/CommentList";
-import moveIcon from "../assets/move-icon.png";
+import moveIcon from "../assets/img/move-icon.png";
 
 const ItemType = "TODO";
 
@@ -25,7 +25,10 @@ const TaskItem = ({
 }) => {
   const [editingText, setEditingText] = useState(todo.text);
   const [showDetails, setShowDetails] = useState(false);
-  const [showCommentIcon, setShowCommentIcon] = useState(false); // State to show/hide icons
+  const [showCommentIcon, setShowCommentIcon] = useState(false);
+  const [isCommentIconDisabled] = useState(true); // Estado para controlar o ícone de comentário desabilitado
+  const [isClicked, setIsClicked] = useState(false); // Estado para controlar se a tarefa está clicada
+
   const isCurrentEditing = editingIndex === index;
   const [{ isDragging }, ref] = useDrag({
     type: ItemType,
@@ -65,17 +68,23 @@ const TaskItem = ({
   };
 
   const handleReminderClick = () => {
-    window.location.href = "https://calendar.google.com/calendar/u/0/r"; // Função para adicionar um lembrete para uma tarefa específica
+    window.location.href = "https://calendar.google.com/calendar/u/0/r";
+  };
+
+  const handleClick = () => {
+    setIsClicked(true); // Define a tarefa como clicada
+    setTimeout(() => setIsClicked(false), 100); // Reseta o estado após 100ms
   };
 
   return (
     <>
       <li
         ref={(node) => ref(drop(node))}
-        className="todo-item"
+        className={`todo-item ${isClicked ? "clicked" : ""}`} // Adiciona a classe quando a tarefa está clicada
         style={{ opacity: isDragging ? 0.5 : 1 }}
         onMouseEnter={() => setShowCommentIcon(true)}
         onMouseLeave={() => setShowCommentIcon(false)}
+        onClick={handleClick} // Adiciona o manipulador de clique
       >
         <div className="todo-content">
           <img src={moveIcon} alt="Move Icon" className="move-icon" />
@@ -87,6 +96,7 @@ const TaskItem = ({
             />
             <div className="custom-checkbox"></div>
           </div>
+
           {isCurrentEditing ? (
             <input
               type="text"
@@ -106,18 +116,28 @@ const TaskItem = ({
               {todo.text}
             </div>
           )}
-          {showCommentIcon && ( // FontAwesomeIcon icon={faComment} className="comment-icon" onClick={toggleDetails}
+          {showCommentIcon && (
             <>
+              <FontAwesomeIcon
+                icon={faComment}
+                className={`comment-icon ${
+                  isCommentIconDisabled ? "disabled" : ""
+                }`}
+                onClick={!isCommentIconDisabled ? toggleDetails : undefined}
+              />
+
               <FontAwesomeIcon
                 icon={faCalendar}
                 className="reminder-icon"
-                onClick={handleReminderClick} // Associando a função de redirecionamento ao clique no ícone
+                onClick={handleReminderClick}
               />
+
               <FontAwesomeIcon
                 icon={faEdit}
                 className="edit-icon"
                 onClick={startEditing}
               />
+
               <FontAwesomeIcon
                 icon={faTrashAlt}
                 className="remove-icon"
