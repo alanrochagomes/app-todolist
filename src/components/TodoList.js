@@ -1,22 +1,84 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "../css/TodoList.css";
 import TaskForm from "./TaskForm";
 import TaskItem from "./TaskItem";
 import "../css/Modal.css";
-import deleteSound from "../assets/audio/delete_sound.mp3"; // Importe o som de Remove
-import clickSound from "../assets/audio/click-som.mp3"; // Importe o som de click do checkbox
-import addSound from "../assets/audio/add-som.mp3"; // Importe o som de adicionar
+import deleteSound from "../assets/audio/delete_sound.mp3";
+import clickSound from "../assets/audio/click-som.mp3";
+import addSound from "../assets/audio/add-som.mp3";
+
+const API_URL = ""; 
+
+const getTodos = async () => {
+  const response = await fetch(`${API_URL}/todos`);
+  if (!response.ok) {
+    throw new Error("Erro ao buscar tarefas");
+  }
+  return await response.json();
+};
+
+const apiAddTodo = async (newTodo) => {
+  const response = await fetch(`${API_URL}/todos`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ text: newTodo, completed: false }),
+  });
+  if (!response.ok) {
+    throw new Error("Erro ao adicionar tarefa");
+  }
+  return await response.json();
+};
+
+const apiRemoveTodo = async (id) => {
+  const response = await fetch(`${API_URL}/todos/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    throw new Error("Erro ao remover tarefa");
+  }
+  return await response.json();
+};
+
+const apiUpdateTodo = async (id, updatedTodo) => {
+  const response = await fetch(`${API_URL}/todos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedTodo),
+  });
+  if (!response.ok) {
+    throw new Error("Erro ao atualizar tarefa");
+  }
+  return await response.json();
+};
+
+const apiReorderTodos = async (todos) => {
+  const response = await fetch(`${API_URL}/todos/reorder`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(todos),
+  });
+  if (!response.ok) {
+    throw new Error("Erro ao reordenar tarefas");
+  }
+  return await response.json();
+};
 
 const TodoList = () => {
   const [todos, setTodos] = useState([
-    { text: "Set a reminder beforehand", completed: false },
-    { text: "Find a location", completed: false },
-    { text: "Screenshot the address", completed: false },
-    { text: "Book the tickets", completed: false },
-    { text: "Find out the parking", completed: false },
-    { text: "Call them", completed: false },
+    { id: 1, text: "Set a reminder beforehand", completed: false },
+    { id: 2, text: "Find a location", completed: false },
+    { id: 3, text: "Screenshot the address", completed: false },
+    { id: 4, text: "Book the tickets", completed: false },
+    { id: 5, text: "Find out the parking", completed: false },
+    { id: 6, text: "Call them", completed: false },
   ]);
 
   const [editingIndex, setEditingIndex] = useState(null);
@@ -26,22 +88,34 @@ const TodoList = () => {
   const [editingTitle, setEditingTitle] = useState(title);
   const [showModal, setShowModal] = useState(false);
   const [indexToRemove, setIndexToRemove] = useState(null);
-  
+
   const audioDeleteRef = useRef(new Audio(deleteSound));
   const audioClickRef = useRef(new Audio(clickSound));
-  const audioAddRef = useRef(new Audio(addSound)); // Referência ao som de adicionar
+  const audioAddRef = useRef(new Audio(addSound));
+
+  useEffect(() => {
+    // getTodos().then(setTodos).catch((error) => console.error(error));
+  }, []);
 
   const addTodo = (newTodo) => {
-    setTodos([...todos, { text: newTodo, completed: false }]);
-    audioAddRef.current.play(); // Reproduz o som de adicionar
+    // Adiciona a nova tarefa na lista localmente
+    const newTask = { id: Date.now(), text: newTodo, completed: false };
+    setTodos((prevTodos) => [...prevTodos, newTask]);
+    audioAddRef.current.play();
+
+    // Chama a API para adicionar a tarefa
+    apiAddTodo(newTodo).catch((error) => console.error(error));
   };
 
   const removeTodo = (index) => {
-    const updatedTodos = todos.filter((_, i) => i !== index);
-    setTodos(updatedTodos);
+    const todoId = todos[index].id;
+    setTodos((prevTodos) => prevTodos.filter((_, i) => i !== index));
     setEditingIndex(null);
     setIsEditing(false);
-    audioDeleteRef.current.play(); // Reproduz o som de exclusão
+    audioDeleteRef.current.play();
+
+    // Chama a API para remover a tarefa
+    apiRemoveTodo(todoId).catch((error) => console.error(error));
   };
 
   const saveTitleEdit = () => {
@@ -50,29 +124,35 @@ const TodoList = () => {
   };
 
   const moveTodo = (dragIndex, hoverIndex) => {
-    const draggedTodo = todos[dragIndex];
     const updatedTodos = [...todos];
-    updatedTodos.splice(dragIndex, 1);
+    const [draggedTodo] = updatedTodos.splice(dragIndex, 1);
     updatedTodos.splice(hoverIndex, 0, draggedTodo);
     setTodos(updatedTodos);
+
+    // Chama a API para reordenar as tarefas
+    apiReorderTodos(updatedTodos).catch((error) => console.error(error));
   };
 
   const saveEdit = (index, newText) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index].text = newText;
-    setTodos(updatedTodos);
+    const todoId = todos[index].id;
+    const updatedTodo = { ...todos[index], text: newText };
+    setTodos((prevTodos) => prevTodos.map((todo, i) => (i === index ? updatedTodo : todo)));
     setEditingIndex(null);
     setIsEditing(false);
-    audioAddRef.current.play(); // Reproduz o som de adicionar ao salvar
+    audioAddRef.current.play();
+
+    // Chama a API para atualizar a tarefa
+    apiUpdateTodo(todoId, updatedTodo).catch((error) => console.error(error));
   };
 
   const toggleTodoCompletion = (index) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index].completed = !updatedTodos[index].completed;
-    setTodos(updatedTodos);
-
-    // Reproduz o som de clique ao marcar ou desmarcar o checkbox
+    const todoId = todos[index].id;
+    const updatedTodo = { ...todos[index], completed: !todos[index].completed };
+    setTodos((prevTodos) => prevTodos.map((todo, i) => (i === index ? updatedTodo : todo)));
     audioClickRef.current.play();
+
+    // Chama a API para atualizar a tarefa
+    apiUpdateTodo(todoId, updatedTodo).catch((error) => console.error(error));
   };
 
   const startEditingFirstTask = () => {
@@ -102,18 +182,15 @@ const TodoList = () => {
   };
 
   const addReminder = (index) => {
-    // Função para adicionar um lembrete para uma tarefa específica
     alert(`Reminder added for task: ${todos[index].text}`);
   };
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="todo-container">
-
         <header className="todo-header">
           {isEditing && <div className="editing-indicator">Editing...</div>}
           {isEditingTitle ? (
-
             <input
               type="text"
               value={editingTitle}
@@ -132,7 +209,6 @@ const TodoList = () => {
             <h1 className="todo-title" onClick={() => setIsEditingTitle(true)}>
               {title}
             </h1>
-
           )}
 
           <div className="controls-tasks">
@@ -140,7 +216,6 @@ const TodoList = () => {
               Tasks
             </p>
           </div>
-
           <div className="controls-edit">
             <p className="tasks-title" onClick={startEditingFirstTask}>
               Edit
@@ -149,7 +224,6 @@ const TodoList = () => {
 
           {editingIndex !== null && (
             <div className="controls-remove">
-              
               <p
                 className="remove"
                 onClick={() => {
@@ -161,13 +235,11 @@ const TodoList = () => {
                 Remove
               </p>
             </div>
-
           )}
         </header>
 
         <ul className="todo-list">
           {todos.map((todo, index) => (
-
             <TaskItem
               key={index}
               index={index}
@@ -179,29 +251,25 @@ const TodoList = () => {
               toggleTodoCompletion={toggleTodoCompletion}
               saveEdit={saveEdit}
               removeTodo={removeTodo}
-              addReminder={addReminder} // Passando a função para o TaskItem
+              addReminder={addReminder}
             />
           ))}
         </ul>
-        
+
         <TaskForm onAdd={addTodo} />
         {isEditing && (
-
           <button
             className="save-button"
             onClick={() => saveEdit(editingIndex, todos[editingIndex].text)}
           >
             Save
           </button>
-
         )}
-        {showModal && (
 
+        {showModal && (
           <div className="modal-overlay" onClick={cancelRemove}>
             <div className="modal-content">
-              <div className="modal-title">
-                Are you sure you want to remove this?
-              </div>
+              <div className="modal-title">Are you sure you want to remove this?</div>
               <div className="modal-actions">
                 <button className="close-button" onClick={confirmRemove}>
                   Remove
@@ -209,7 +277,6 @@ const TodoList = () => {
               </div>
             </div>
           </div>
-
         )}
       </div>
     </DndProvider>
