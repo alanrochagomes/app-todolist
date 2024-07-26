@@ -4,6 +4,7 @@
 https://github.com/alanrochagomes/gerenciamento-de-tarefas
 
 - `/frontend`: Frontend com React e JavaScript.
+- `/backend`: Pasta do projeto Backend com Express e JavaScript.
 
 ## Frontend start
 
