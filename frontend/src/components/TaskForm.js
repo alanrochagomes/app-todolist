@@ -13,7 +13,6 @@ const TaskForm = ({ onAdd }) => {
 
   return (
     <div className="todo-input-container">
-      <div className="todo-checkbox"></div>
       <input
         type="text"
         className="todo-input"

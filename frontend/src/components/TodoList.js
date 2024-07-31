@@ -1,3 +1,5 @@
+// src/components/TodoList.js
+
 import React, { useState, useEffect, useRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -8,79 +10,10 @@ import "../css/Modal.css";
 import deleteSound from "../assets/audio/delete_sound.mp3";
 import clickSound from "../assets/audio/click-som.mp3";
 import addSound from "../assets/audio/add-som.mp3";
-
-const API_URL = ""; 
-
-const getTodos = async () => {
-  const response = await fetch(`${API_URL}/todos`);
-  if (!response.ok) {
-    throw new Error("Erro ao buscar tarefas");
-  }
-  return await response.json();
-};
-
-const apiAddTodo = async (newTodo) => {
-  const response = await fetch(`${API_URL}/todos`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ text: newTodo, completed: false }),
-  });
-  if (!response.ok) {
-    throw new Error("Erro ao adicionar tarefa");
-  }
-  return await response.json();
-};
-
-const apiRemoveTodo = async (id) => {
-  const response = await fetch(`${API_URL}/todos/${id}`, {
-    method: "DELETE",
-  });
-  if (!response.ok) {
-    throw new Error("Erro ao remover tarefa");
-  }
-  return await response.json();
-};
-
-const apiUpdateTodo = async (id, updatedTodo) => {
-  const response = await fetch(`${API_URL}/todos/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updatedTodo),
-  });
-  if (!response.ok) {
-    throw new Error("Erro ao atualizar tarefa");
-  }
-  return await response.json();
-};
-
-const apiReorderTodos = async (todos) => {
-  const response = await fetch(`${API_URL}/todos/reorder`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(todos),
-  });
-  if (!response.ok) {
-    throw new Error("Erro ao reordenar tarefas");
-  }
-  return await response.json();
-};
+import { API_URL, buildApiGetRequest, buildApiPostRequest, buildApiPutRequest, buildApiDeleteRequest } from "../api/api";
 
 const TodoList = () => {
-  const [todos, setTodos] = useState([
-    { id: 1, text: "Set a reminder beforehand", completed: false },
-    { id: 2, text: "Find a location", completed: false },
-    { id: 3, text: "Screenshot the address", completed: false },
-    { id: 4, text: "Book the tickets", completed: false },
-    { id: 5, text: "Find out the parking", completed: false },
-    { id: 6, text: "Call them", completed: false },
-  ]);
-
+  const [todos, setTodos] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState("Booking Movie Tickets");
@@ -94,28 +27,44 @@ const TodoList = () => {
   const audioAddRef = useRef(new Audio(addSound));
 
   useEffect(() => {
-    // getTodos().then(setTodos).catch((error) => console.error(error));
+    const fetchTodos = async () => {
+      try {
+        const data = await buildApiGetRequest(API_URL);
+        setTodos(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchTodos();
   }, []);
 
-  const addTodo = (newTodo) => {
-    // Adiciona a nova tarefa na lista localmente
-    const newTask = { id: Date.now(), text: newTodo, completed: false };
-    setTodos((prevTodos) => [...prevTodos, newTask]);
+  const addTodo = async (newTodo) => {
+    const newTask = { titulo: newTodo, status: 'pendente' };
     audioAddRef.current.play();
 
-    // Chama a API para adicionar a tarefa
-    apiAddTodo(newTodo).catch((error) => console.error(error));
+    try {
+      await buildApiPostRequest(API_URL, newTask);
+      // Atualiza a lista de tarefas após adicionar uma nova
+      const updatedTodos = await buildApiGetRequest(API_URL);
+      setTodos(updatedTodos);
+    } catch (error) {
+      console.error(error);
+      alert('Houve um erro ao adicionar a tarefa. Por favor, tente novamente.');
+    }
   };
 
-  const removeTodo = (index) => {
-    const todoId = todos[index].id;
+  const removeTodo = async (index) => {
+    const todoId = todos[index]._id;
     setTodos((prevTodos) => prevTodos.filter((_, i) => i !== index));
     setEditingIndex(null);
     setIsEditing(false);
     audioDeleteRef.current.play();
 
-    // Chama a API para remover a tarefa
-    apiRemoveTodo(todoId).catch((error) => console.error(error));
+    try {
+      await buildApiDeleteRequest(`${API_URL}/${todoId}`);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const saveTitleEdit = () => {
@@ -123,36 +72,45 @@ const TodoList = () => {
     setIsEditingTitle(false);
   };
 
-  const moveTodo = (dragIndex, hoverIndex) => {
+  const moveTodo = async (dragIndex, hoverIndex) => {
     const updatedTodos = [...todos];
     const [draggedTodo] = updatedTodos.splice(dragIndex, 1);
     updatedTodos.splice(hoverIndex, 0, draggedTodo);
     setTodos(updatedTodos);
 
-    // Chama a API para reordenar as tarefas
-    apiReorderTodos(updatedTodos).catch((error) => console.error(error));
+    try {
+      await buildApiPostRequest(`${API_URL}/reorder`, updatedTodos);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const saveEdit = (index, newText) => {
-    const todoId = todos[index].id;
-    const updatedTodo = { ...todos[index], text: newText };
+  const saveEdit = async (index, newText) => {
+    const todoId = todos[index]._id;
+    const updatedTodo = { ...todos[index], titulo: newText };
     setTodos((prevTodos) => prevTodos.map((todo, i) => (i === index ? updatedTodo : todo)));
     setEditingIndex(null);
     setIsEditing(false);
     audioAddRef.current.play();
 
-    // Chama a API para atualizar a tarefa
-    apiUpdateTodo(todoId, updatedTodo).catch((error) => console.error(error));
+    try {
+      await buildApiPutRequest(`${API_URL}/${todoId}`, updatedTodo);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const toggleTodoCompletion = (index) => {
-    const todoId = todos[index].id;
-    const updatedTodo = { ...todos[index], completed: !todos[index].completed };
+  const toggleTodoCompletion = async (index) => {
+    const todoId = todos[index]._id;
+    const updatedTodo = { ...todos[index], status: todos[index].status === 'pendente' ? 'concluída' : 'pendente' };
     setTodos((prevTodos) => prevTodos.map((todo, i) => (i === index ? updatedTodo : todo)));
     audioClickRef.current.play();
 
-    // Chama a API para atualizar a tarefa
-    apiUpdateTodo(todoId, updatedTodo).catch((error) => console.error(error));
+    try {
+      await buildApiPutRequest(`${API_URL}/${todoId}`, updatedTodo);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const startEditingFirstTask = () => {
@@ -182,7 +140,7 @@ const TodoList = () => {
   };
 
   const addReminder = (index) => {
-    alert(`Reminder added for task: ${todos[index].text}`);
+    alert(`Reminder added for task: ${todos[index].titulo}`);
   };
 
   return (
@@ -204,7 +162,6 @@ const TodoList = () => {
               className="edit-title-input"
               autoFocus
             />
-
           ) : (
             <h1 className="todo-title" onClick={() => setIsEditingTitle(true)}>
               {title}
@@ -260,7 +217,7 @@ const TodoList = () => {
         {isEditing && (
           <button
             className="save-button"
-            onClick={() => saveEdit(editingIndex, todos[editingIndex].text)}
+            onClick={() => saveEdit(editingIndex, todos[editingIndex].titulo)}
           >
             Save
           </button>

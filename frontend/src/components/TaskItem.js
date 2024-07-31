@@ -1,15 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTrashAlt,
-  faEdit,
-  faCalendar,
-  faComment,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt, faEdit, faCalendar, faComment } from "@fortawesome/free-solid-svg-icons";
 import "../css/TaskItem.css";
 import TaskDetails from "../components/comment/CommentList";
 import moveIcon from "../assets/img/move-icon.png";
+import { buildApiDeleteRequest, API_URL } from "../api/api"; // Ajuste o caminho conforme necessário
 
 const ItemType = "TODO";
 
@@ -22,12 +18,10 @@ const TaskItem = ({
   removeTodo,
   moveTodo,
   toggleTodoCompletion,
+  saveEdit
 }) => {
-  const [editingText, setEditingText] = useState(todo.text);
+  const [editingText, setEditingText] = useState(todo.titulo);
   const [showDetails, setShowDetails] = useState(false);
-  const [showCommentIcon, setShowCommentIcon] = useState(false);
-  const [isCommentIconDisabled] = useState(true); // Estado para controlar o ícone de comentário desabilitado
-  const [isClicked, setIsClicked] = useState(false); // Estado para controlar se a tarefa está clicada
 
   const isCurrentEditing = editingIndex === index;
   const [{ isDragging }, ref] = useDrag({
@@ -59,39 +53,40 @@ const TaskItem = ({
 
   const startEditing = () => {
     setEditingIndex(index);
-    setEditingText(todo.text);
+    setEditingText(todo.titulo);
     setIsEditing(true);
   };
 
-  const toggleDetails = () => {
-    setShowDetails(!showDetails);
+  const handleSaveEdit = () => {
+    if (editingText.trim()) {
+      saveEdit(index, editingText);
+      setEditingIndex(null);
+      setIsEditing(false);
+    }
   };
 
-  const handleReminderClick = () => {
-    window.location.href = "https://calendar.google.com/calendar/u/0/r";
-  };
-
-  const handleClick = () => {
-    setIsClicked(true); // Define a tarefa como clicada
-    setTimeout(() => setIsClicked(false), 100); // Reseta o estado após 100ms
+  const handleDelete = async () => {
+    try {
+      await buildApiDeleteRequest(`${API_URL}/${todo._id}`);
+      removeTodo(index);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <>
       <li
         ref={(node) => ref(drop(node))}
-        className={`todo-item ${isClicked ? "clicked" : ""}`} // Adiciona a classe quando a tarefa está clicada
+        className={`todo-item ${isDragging ? "dragging" : ""}`}
         style={{ opacity: isDragging ? 0.5 : 1 }}
-        onMouseEnter={() => setShowCommentIcon(true)}
-        onMouseLeave={() => setShowCommentIcon(false)}
-        onClick={handleClick} // Adiciona o manipulador de clique
       >
         <div className="todo-content">
           <img src={moveIcon} alt="Move Icon" className="move-icon" />
           <div className="todo-checkbox">
             <input
               type="checkbox"
-              checked={todo.completed}
+              checked={todo.status === 'concluída'}
               onChange={() => toggleTodoCompletion(index)}
             />
             <div className="custom-checkbox"></div>
@@ -101,54 +96,38 @@ const TaskItem = ({
             <input
               type="text"
               value={editingText}
-              onChange={(e) => {
-                setEditingText(e.target.value);
-                todo.text = e.target.value;
-              }}
+              onChange={(e) => setEditingText(e.target.value)}
               className="edit-input"
               ref={inputRef}
             />
           ) : (
             <div
-              className={`todo-text ${todo.completed ? "completed" : ""}`}
+              className={`todo-text ${todo.status === 'concluída' ? "completed" : ""}`}
               onClick={startEditing}
             >
-              {todo.text}
+              {todo.titulo}
             </div>
           )}
-          {showCommentIcon && (
-            <>
-              <FontAwesomeIcon
-                icon={faComment}
-                className={`comment-icon ${
-                  isCommentIconDisabled ? "disabled" : ""
-                }`}
-                onClick={!isCommentIconDisabled ? toggleDetails : undefined}
-              />
 
+          {isCurrentEditing ? (
+            <button onClick={handleSaveEdit} className="save-button">Save</button>
+          ) : (
+            <div className="todo-actions">
               <FontAwesomeIcon
-                icon={faCalendar}
-                className="reminder-icon"
-                onClick={handleReminderClick}
+                icon={faTrashAlt}
+                className="remove-icon"
+                onClick={handleDelete}
               />
-
               <FontAwesomeIcon
                 icon={faEdit}
                 className="edit-icon"
                 onClick={startEditing}
               />
-
-              <FontAwesomeIcon
-                icon={faTrashAlt}
-                className="remove-icon"
-                onClick={() => removeTodo(index)}
-              />
-            </>
+            </div>
           )}
         </div>
-        {isCurrentEditing && <div className="todo-actions"></div>}
       </li>
-      {showDetails && <TaskDetails task={todo} onClose={toggleDetails} />}
+      {showDetails && <TaskDetails task={todo} onClose={() => setShowDetails(false)} />}
     </>
   );
 };
