@@ -1,5 +1,3 @@
-// src/components/TodoList.js
-
 import React, { useState, useEffect, useRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -10,7 +8,8 @@ import "../css/Modal.css";
 import deleteSound from "../assets/audio/delete_sound.mp3";
 import clickSound from "../assets/audio/click-som.mp3";
 import addSound from "../assets/audio/add-som.mp3";
-import { API_URL, buildApiGetRequest, buildApiPostRequest, buildApiPutRequest, buildApiDeleteRequest } from "../api/api";
+
+import { API_URL, buildApiGetRequest, buildApiPostRequest, buildApiPutRequest, buildApiDeleteRequest } from "../api/api"; // Verifique o caminho aqui
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
@@ -44,7 +43,6 @@ const TodoList = () => {
 
     try {
       await buildApiPostRequest(API_URL, newTask);
-      // Atualiza a lista de tarefas após adicionar uma nova
       const updatedTodos = await buildApiGetRequest(API_URL);
       setTodos(updatedTodos);
     } catch (error) {
@@ -86,6 +84,8 @@ const TodoList = () => {
   };
 
   const saveEdit = async (index, newText) => {
+    if (index < 0 || index >= todos.length) return; // Verificação de índice válido
+
     const todoId = todos[index]._id;
     const updatedTodo = { ...todos[index], titulo: newText };
     setTodos((prevTodos) => prevTodos.map((todo, i) => (i === index ? updatedTodo : todo)));
@@ -101,6 +101,8 @@ const TodoList = () => {
   };
 
   const toggleTodoCompletion = async (index) => {
+    if (index < 0 || index >= todos.length) return; // Verificação de índice válido
+
     const todoId = todos[index]._id;
     const updatedTodo = { ...todos[index], status: todos[index].status === 'pendente' ? 'concluída' : 'pendente' };
     setTodos((prevTodos) => prevTodos.map((todo, i) => (i === index ? updatedTodo : todo)));
@@ -217,7 +219,7 @@ const TodoList = () => {
         {isEditing && (
           <button
             className="save-button"
-            onClick={() => saveEdit(editingIndex, todos[editingIndex].titulo)}
+            onClick={() => saveEdit(editingIndex, todos[editingIndex]?.titulo || '')} // Garantir que editingIndex é válido
           >
             Save
           </button>
